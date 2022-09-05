@@ -1,5 +1,6 @@
 # Adult_Census_Income_Prediction
 Adult Census Income Prediction ineuron internship project
+check fork and pull request
 
 ### Software and account Requirement.
 
