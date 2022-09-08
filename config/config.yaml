@@ -3,8 +3,9 @@ training_pipeline_config:
   artifact_dir: artifact
 
 data_ingestion_config:
-  dataset_download_url: https://www.kaggle.com/datasets/overload10/adult-census-dataset/download?datasetVersionNumber=1
+  dataset_download_url: https://github.com/vedjangid19/dataset/raw/main/adult.zip
   raw_data_dir: raw_data 
+  zip_data_dir: zip_data
   raw_data_file: ingested_file.csv
   ingested_dir: ingested_data
   ingested_train_dir: train
