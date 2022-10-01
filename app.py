@@ -71,7 +71,8 @@ def render_artifact_dir(req_path):
 @app.route('/', methods=['GET', 'POST'])
 def index():
     try:
-        return render_template('index.html')
+        home_page = "home"
+        return render_template('index.html', home_page=home_page)
     except Exception as e:
         return str(e)
 
