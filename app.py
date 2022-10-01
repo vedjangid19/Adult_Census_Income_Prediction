@@ -102,6 +102,51 @@ def train():
     return render_template('train.html', context=context)
 
 
+
+@app.route('/test')
+def test():
+    
+    age = 29
+    workclass = " Private"
+    fnlwgt = 234721
+    education = " Bachelors"
+    education_num = 13
+    marital_status = " Married-civ-spouse"
+    occupation = " Exec-managerial"
+    relationship = " Husband"
+    race = " Black"
+    sex = " Male"
+    capital_gain = 2569
+    capital_loss = 250
+    hours_per_week = 42
+    country = " United-States"
+    
+    income_prediction_data = IncomePredictionData(
+                                        age=age,
+                                        workclass=workclass,
+                                        fnlwgt=fnlwgt,
+                                        education=education,
+                                        education_num=education_num,
+                                        marital_status=marital_status,
+                                        occupation=occupation,
+                                        relationship=relationship,
+                                        race=race,
+                                        sex=sex,
+                                        capital_gain=capital_gain,
+                                        capital_loss=capital_loss,
+                                        hours_per_week=hours_per_week,
+                                        country=country,
+                                        # wages=wages
+                                    )
+    income_prediction_df = income_prediction_data.get_input_prediction_input_dataframe()   
+    income_prediction_predictor = IncomePredictionPredictor(model_dir=MODEL_DIR)
+    median_income_prediction_value = income_prediction_predictor.predict(X=income_prediction_df)
+    
+    print(f"income_prediction_predictor : {income_prediction_df}")
+    print(f"income_prediction_predictor : {income_prediction_predictor}")
+    print(f"median_income_prediction_value : {median_income_prediction_value}")
+    
+
 @app.route('/predict', methods=['GET', 'POST'])
 def predict():
     context = {
@@ -110,34 +155,60 @@ def predict():
     }
 
     if request.method == 'POST':
-        longitude = float(request.form['longitude'])
-        latitude = float(request.form['latitude'])
-        income_prediction_median_age = float(request.form['income_prediction_median_age'])
-        total_rooms = float(request.form['total_rooms'])
-        total_bedrooms = float(request.form['total_bedrooms'])
-        population = float(request.form['population'])
-        households = float(request.form['households'])
-        median_income = float(request.form['median_income'])
-        ocean_proximity = request.form['ocean_proximity']
+        
+        age = int(request.form['age'])
+        workclass = request.form['workclass']
+        fnlwgt = request.form['fnlwgt']
+        education = request.form['education']
+        education_num = int(request.form['education_num'])
+        marital_status = request.form['marital_status']
+        occupation = request.form['occupation']
+        relationship = request.form['relationship']
+        race = request.form['race']
+        sex = request.form['sex']
+        capital_gain = int(request.form['capital_gain'])
+        capital_loss = int(request.form['capital_loss'])
+        hours_per_week = int(request.form['hours_per_week'])
+        native_country = request.form['native_country']
+        # wages = request.form['wages']
+        
 
-        income_prediction_data = IncomePredictionData(longitude=longitude,
-                                   latitude=latitude,
-                                   income_prediction_median_age=income_prediction_median_age,
-                                   total_rooms=total_rooms,
-                                   total_bedrooms=total_bedrooms,
-                                   population=population,
-                                   households=households,
-                                   median_income=median_income,
-                                   ocean_proximity=ocean_proximity,
-                                   )
-        income_prediction_df = income_prediction_data.get_income_prediction_input_data_frame()
+        income_prediction_data = IncomePredictionData(
+                                        age=age,
+                                        workclass=workclass,
+                                        fnlwgt=fnlwgt,
+                                        education=education,
+                                        education_num=education_num,
+                                        marital_status=marital_status,
+                                        occupation=occupation,
+                                        relationship=relationship,
+                                        race=race,
+                                        sex=sex,
+                                        capital_gain=capital_gain,
+                                        capital_loss=capital_loss,
+                                        hours_per_week=hours_per_week,
+                                        country=native_country,
+                                        # wages=wages
+                                    )
+        income_prediction_df = income_prediction_data.get_input_prediction_input_dataframe()
         income_prediction_predictor = IncomePredictionPredictor(model_dir=MODEL_DIR)
         median_income_prediction_value = income_prediction_predictor.predict(X=income_prediction_df)
+
         context = {
             income_prediction_DATA_KEY: income_prediction_data.get_income_prediction_data_as_dict(),
-            MEDIAN_income_prediction_VALUE_KEY: median_income_prediction_value,
+            MEDIAN_income_prediction_VALUE_KEY: median_income_prediction_value[0]
+            
         }
-        return render_template('predict.html', context=context)
+        print(f"income_prediction_predictor : {income_prediction_df}")
+        print(f"income_prediction_predictor : {income_prediction_predictor}")
+        print(f"median_income_prediction_value : {median_income_prediction_value}")
+        if int(median_income_prediction_value[0]) == 1:
+            median_income_prediction_value = "Income > 50K$"
+        else:
+            median_income_prediction_value = "Income < 50K$"
+            
+            
+        return render_template('predict.html', context=context, median_income_prediction_value=median_income_prediction_value)
     return render_template("predict.html", context=context)
 
 
